@@ -1,9 +1,12 @@
 package com.example.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
+import com.example.form.ItemInsertForm;
 import com.example.service.CategoryService;
 import com.example.service.ItemService;
 
@@ -13,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -28,6 +34,11 @@ public class ItemController {
     private ItemService itemService;
     @Autowired
     private CategoryService categoryService;
+
+    @ModelAttribute
+    public ItemInsertForm setUpItemInsertForm() {
+        return new ItemInsertForm();
+    }
     
     /**
      * 商品一覧を表示する
@@ -70,6 +81,14 @@ public class ItemController {
         model.addAttribute("categoryList", categoryList);
         
         return "add";
+    }
+
+    @RequestMapping("/insert")
+    public String insertItem(@Validated ItemInsertForm itemInsertForm, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return showAdd(model);
+        }
+        return "redirect:/item/list";
     }
     
 }

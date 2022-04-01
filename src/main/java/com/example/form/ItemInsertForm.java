@@ -1,5 +1,8 @@
 package com.example.form;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * 
  * @author hondayuki
@@ -9,16 +12,22 @@ public class ItemInsertForm {
 	/** id */
 	private Integer id;
 	/** アイテム名 */
+    @NotBlank
 	private String name;
 	/** 状態 */
+    @NotEmpty
 	private String condition;
 	/** 小カテゴリ */
+    @NotBlank
 	private String sCategory;
 	/** ブランド */
+    @NotBlank
 	private String brand;
 	/** 価格 */
+    @NotBlank
 	private String price;
 	/** 説明 */
+    @NotBlank
 	private String description;
     
     /**
