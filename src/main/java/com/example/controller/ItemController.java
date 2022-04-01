@@ -39,7 +39,15 @@ public class ItemController {
 
         return "list";
     }
-
+    
+    /**
+     * 詳細画面を表示する
+     * 
+     * @param itemId
+     * @param pageNum
+     * @param model
+     * @return
+     */
     @RequestMapping("/detail")
     public String showDetail(Integer itemId, Integer pageNum, Model model) {
         Item item = itemService.showDetail(itemId);
@@ -47,6 +55,11 @@ public class ItemController {
         model.addAttribute("item", item);
         model.addAttribute("pageNum", pageNum);
         return "detail";
+    }
+
+    @RequestMapping("/add")
+    public String showAdd() {
+        return "add";
     }
     
 }
