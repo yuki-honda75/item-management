@@ -41,10 +41,11 @@ public class ItemController {
     }
 
     @RequestMapping("/detail")
-    public String showDetail(Integer itemId, Model model) {
+    public String showDetail(Integer itemId, Integer pageNum, Model model) {
         Item item = itemService.showDetail(itemId);
 
         model.addAttribute("item", item);
+        model.addAttribute("pageNum", pageNum);
         return "detail";
     }
     
