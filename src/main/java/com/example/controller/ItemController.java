@@ -1,7 +1,5 @@
 package com.example.controller;
 
-
-
 import com.example.domain.Item;
 import com.example.service.ItemService;
 
@@ -26,7 +24,7 @@ public class ItemController {
     private ItemService itemService;
 
     @RequestMapping("/list")
-    public String showList(@PageableDefault(page = 0, size = 20) Pageable pageable, Model model) {
+    public String showList(@PageableDefault(size = 40) Pageable pageable, Model model) {
         Page<Item> page = itemService.showList(pageable);
 
         model.addAttribute("page", page);
