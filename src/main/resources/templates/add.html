@@ -69,11 +69,7 @@
         <div class="col-sm-8">
           <select class="form-control">
             <option>-- parentCategory --</option>
-            <option>parentCategory1</option>
-            <option>parentCategory2</option>
-            <option>parentCategory3</option>
-            <option>parentCategory4</option>
-            <option>parentCategory5</option>
+            <option th:each="category : ${categoryList}" th:if="${category.parent == null && category.nameAll == null}" th:text="${category.name}" th:value="${category.id}">parentCategory1</option>
           </select>
         </div>
       </div>
@@ -82,11 +78,7 @@
         <div class="col-sm-8">
           <select class="form-control">
             <option>-- childCategory --</option>
-            <option>childCategory1</option>
-            <option>childCategory2</option>
-            <option>childCategory3</option>
-            <option>childCategory4</option>
-            <option>childCategory5</option>
+            <option th:each="category : ${categoryList}" th:if="${category.parent != null && category.nameAll == null}" th:text="${category.name}" th:value="${category.id}">childCategory1</option>
           </select>
         </div>
       </div>
@@ -95,11 +87,7 @@
         <div class="col-sm-8">
           <select class="form-control">
             <option>-- grandChild --</option>
-            <option>grandChild1</option>
-            <option>grandChild2</option>
-            <option>grandChild3</option>
-            <option>grandChild4</option>
-            <option>grandChild5</option>
+            <option th:each="category : ${categoryList}" th:if="${category.parent != null && category.nameAll != null}" th:text="${category.name}" th:value="${category.id}">grandChild1</option>
           </select>
         </div>
       </div>

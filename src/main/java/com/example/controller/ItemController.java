@@ -1,6 +1,10 @@
 package com.example.controller;
 
+import java.util.List;
+
+import com.example.domain.Category;
 import com.example.domain.Item;
+import com.example.service.CategoryService;
 import com.example.service.ItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ItemController {
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private CategoryService categoryService;
     
     /**
      * 商品一覧を表示する
@@ -58,7 +64,11 @@ public class ItemController {
     }
 
     @RequestMapping("/add")
-    public String showAdd() {
+    public String showAdd(Model model) {
+        List<Category> categoryList = categoryService.getCategory();
+
+        model.addAttribute("categoryList", categoryList);
+        
         return "add";
     }
     
