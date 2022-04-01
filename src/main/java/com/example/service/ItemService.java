@@ -17,7 +17,12 @@ import org.springframework.stereotype.Service;
 public class ItemService {
 	@Autowired
 	private ItemRepository itemRepository;
-
+	
+	 /**
+     * 商品を全件取得する
+     * @param pageable
+     * @return ページングされた商品データ
+     */
 	public Page<Item> showList(Pageable pageable) {
 		return itemRepository.findAll(pageable);
 	}

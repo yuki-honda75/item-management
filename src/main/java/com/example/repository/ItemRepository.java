@@ -39,6 +39,11 @@ public class ItemRepository {
 	@Autowired
     private NamedParameterJdbcTemplate template;
 	
+    /**
+     * 商品を全件取得する
+     * @param pageable
+     * @return ページングされた商品データ
+     */
 	public Page<Item> findAll(Pageable pageable) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
