@@ -26,4 +26,8 @@ public class ItemService {
 	public Page<Item> showList(Pageable pageable) {
 		return itemRepository.findAll(pageable);
 	}
+
+	public Item showDetail(Integer itemId) {
+		return itemRepository.findById(itemId);
+	}
 }
