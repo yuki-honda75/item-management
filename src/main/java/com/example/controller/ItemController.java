@@ -22,7 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ItemController {
     @Autowired
     private ItemService itemService;
-
+    
+    /**
+     * 商品一覧を表示する
+     * 
+     * @param pageable
+     * @param model
+     * @return
+     */
     @RequestMapping("/list")
     public String showList(@PageableDefault(size = 40) Pageable pageable, Model model) {
         Page<Item> page = itemService.showList(pageable);
@@ -31,6 +38,15 @@ public class ItemController {
         model.addAttribute("itemList", page.getContent());
 
         return "list";
+    }
+
+    @RequestMapping("/detail")
+    public String showDetail(Integer itemId, Integer pageNum, Model model) {
+        Item item = itemService.showDetail(itemId);
+
+        model.addAttribute("item", item);
+        model.addAttribute("pageNum", pageNum);
+        return "detail";
     }
     
 }

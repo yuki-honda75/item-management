@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Item;
@@ -39,6 +40,11 @@ public class ItemRepository {
 	@Autowired
     private NamedParameterJdbcTemplate template;
 	
+    /**
+     * 商品を全件取得する
+     * @param pageable
+     * @return ページングされた商品データ
+     */
 	public Page<Item> findAll(Pageable pageable) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
@@ -56,5 +62,27 @@ public class ItemRepository {
 		
 		return new PageImpl<>(itemList, pageable, count);
 	}
+
+	/**
+	 * 商品をid検索する
+	 * 
+	 * @param itemId
+	 * @return 商品情報
+	 */
+    public Item findById(Integer itemId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT");
+		sql.append(" i.id as item_id, i.name as item_name, condition, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
+		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
+        sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
+        sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
+        sql.append(" WHERE i.id=:id");
+        SqlParameterSource param = new MapSqlParameterSource().addValue("id", itemId);
+
+        Item item = template.queryForObject(sql.toString(), param, ITEM_ROW_MAPPER);
+
+        return item;
+        
+    }
 	
 }
