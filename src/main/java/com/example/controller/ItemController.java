@@ -42,8 +42,8 @@ public class ItemController {
 
     @RequestMapping("/detail")
     public String showDetail(Integer itemId, Model model) {
-        Item item = itemService.showDetail(1);
-        
+        Item item = itemService.showDetail(itemId);
+
         model.addAttribute("item", item);
         return "detail";
     }
