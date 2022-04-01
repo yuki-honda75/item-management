@@ -13,6 +13,8 @@ public class Item {
 	private String name;
 	/** 状態 */
 	private Integer condition;
+	/** 小カテゴリID */
+	private Integer sCategoryId;
 	/** 小カテゴリ */
 	private String sCategory;
 	/** 中カテゴリ */
@@ -45,6 +47,12 @@ public class Item {
 	}
 	public void setCondition(Integer condition) {
 		this.condition = condition;
+	}
+	public Integer getsCategoryId() {
+		return sCategoryId;
+	}
+	public void setsCategoryId(Integer sCategoryId) {
+		this.sCategoryId = sCategoryId;
 	}
 	public String getSCategory() {
 		return sCategory;
@@ -88,13 +96,14 @@ public class Item {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 	@Override
 	public String toString() {
-		return "Item [LCategory=" + lCategory + ", MCategory=" + mCategory + ", SCategory=" + sCategory + ", brand="
-				+ brand + ", condition=" + condition + ", description=" + description + ", id=" + id + ", name=" + name
-				+ ", price=" + price + ", shipping=" + shipping + "]";
+		return "Item [brand=" + brand + ", condition=" + condition + ", description=" + description + ", id=" + id
+				+ ", lCategory=" + lCategory + ", mCategory=" + mCategory + ", name=" + name + ", price=" + price
+				+ ", sCategory=" + sCategory + ", sCategoryId=" + sCategoryId + ", shipping=" + shipping + "]";
 	}
+
+	
 
 	
 }

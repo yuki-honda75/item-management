@@ -8,6 +8,7 @@ import com.example.form.ItemInsertForm;
 import com.example.service.CategoryService;
 import com.example.service.ItemService;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -82,10 +83,19 @@ public class ItemController {
     }
 
     @RequestMapping("/insert")
-    public String insertItem(@Validated ItemInsertForm itemInsertForm, BindingResult result, Model model) {
+    public String insertItem(@Validated ItemInsertForm form, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return showAdd(model);
         }
+
+        Item item = new Item();
+        BeanUtils.copyProperties(form, item);
+        item.setCondition(form.getIntCondition());
+        item.setsCategoryId(form.getIntSCategory());
+        item.setPrice(form.getDoublePrice());
+
+        itemService.insertItem(item);
+        
         return "redirect:/item/list";
     }
     

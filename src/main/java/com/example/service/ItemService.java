@@ -36,4 +36,8 @@ public class ItemService {
 	public Item showDetail(Integer itemId) {
 		return itemRepository.findById(itemId);
 	}
+
+	public void insertItem(Item item) {
+		itemRepository.insert(item);
+	}
 }
