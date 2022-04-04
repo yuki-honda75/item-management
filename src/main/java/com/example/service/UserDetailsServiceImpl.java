@@ -1,10 +1,15 @@
 package com.example.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.example.domain.Account;
 import com.example.domain.User;
 import com.example.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +26,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return new Account(null, null);
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = userRepository.findByName(name);
+        if (user == null) {
+            throw new UsernameNotFoundException("その名前は登録されていません");
+        }
+        Collection<GrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
+        if (user.getAuthority() == 1) {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
+        return new Account(user, authorityList);
     }
 }
