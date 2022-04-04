@@ -27,7 +27,17 @@ public class ItemService {
 		return itemRepository.findAll(pageable);
 	}
 
+	/**
+	 * 商品をid検索する
+	 * 
+	 * @param itemId
+	 * @return 商品情報
+	 */
 	public Item showDetail(Integer itemId) {
 		return itemRepository.findById(itemId);
+	}
+
+	public void insertItem(Item item) {
+		itemRepository.insert(item);
 	}
 }

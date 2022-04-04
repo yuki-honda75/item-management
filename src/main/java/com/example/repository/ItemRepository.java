@@ -84,5 +84,18 @@ public class ItemRepository {
         return item;
         
     }
+
+    public void insert(Item item) {
+        String sql = "INSERT INTO items (name, condition, category, brand, price, shipping, description) VALUES (:name, :condition, :category, :brand, :price, 0, :description)";
+        SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("name", item.getName())
+        .addValue("condition", item.getCondition())
+        .addValue("category", item.getsCategoryId())
+        .addValue("brand", item.getBrand())
+        .addValue("price", item.getPrice())
+        .addValue("description", item.getDescription());
+
+        template.update(sql, param);
+    }
 	
 }
