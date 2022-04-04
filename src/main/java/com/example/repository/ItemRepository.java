@@ -27,6 +27,7 @@ public class ItemRepository {
         item.setId(rs.getInt("item_id"));
         item.setName(rs.getString("item_name"));
         item.setCondition(rs.getInt("condition"));
+        item.setsCategoryId(rs.getInt("category"));
         item.setSCategory(rs.getString("s_category"));
         item.setMCategory(rs.getString("m_category"));
         item.setLCategory(rs.getString("l_category"));
@@ -48,11 +49,11 @@ public class ItemRepository {
 	public Page<Item> findAll(Pageable pageable) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
-		sql.append(" i.id as item_id, i.name as item_name, condition, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
+		sql.append(" i.id as item_id, i.name as item_name, condition, category, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
 		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
         sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
         sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
-        sql.append(" ORDER BY i.id");
+        sql.append(" ORDER BY i.id DESC");
 		sql.append(" LIMIT "); 
 		sql.append(pageable.getPageSize());
 		sql.append(" OFFSET ");
@@ -72,7 +73,7 @@ public class ItemRepository {
     public Item findById(Integer itemId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
-		sql.append(" i.id as item_id, i.name as item_name, condition, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
+		sql.append(" i.id as item_id, i.name as item_name, condition, category, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
 		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
         sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
         sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
@@ -85,6 +86,11 @@ public class ItemRepository {
         
     }
 
+    /**
+     * 商品テーブルに登録する
+     * 
+     * @param item
+     */
     public void insert(Item item) {
         String sql = "INSERT INTO items (name, condition, category, brand, price, shipping, description) VALUES (:name, :condition, :category, :brand, :price, 0, :description)";
         SqlParameterSource param = new MapSqlParameterSource()
@@ -94,6 +100,25 @@ public class ItemRepository {
         .addValue("brand", item.getBrand())
         .addValue("price", item.getPrice())
         .addValue("description", item.getDescription());
+
+        template.update(sql, param);
+    }
+
+    /**
+     * 商品情報を編集する
+     * 
+     * @param item
+     */
+    public void update(Item item) {
+        String sql = "UPDATE items SET name=:name, condition=:condition, category=:category, brand=:brand, price=:price, description=:description WHERE id=:id";
+        SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("name", item.getName())
+        .addValue("condition", item.getCondition())
+        .addValue("category", item.getsCategoryId())
+        .addValue("brand", item.getBrand())
+        .addValue("price", item.getPrice())
+        .addValue("description", item.getDescription())
+        .addValue("id", item.getId());
 
         template.update(sql, param);
     }

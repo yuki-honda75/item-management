@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.domain.Category;
 import com.example.domain.Item;
 import com.example.form.ItemInsertForm;
+import com.example.form.ItemUpdateForm;
 import com.example.service.CategoryService;
 import com.example.service.ItemService;
 
@@ -37,6 +38,10 @@ public class ItemController {
     @ModelAttribute
     public ItemInsertForm setUpItemInsertForm() {
         return new ItemInsertForm();
+    }
+    @ModelAttribute
+    public ItemUpdateForm setUpItemUpdateForm() {
+        return new ItemUpdateForm();
     }
     
     /**
@@ -73,6 +78,12 @@ public class ItemController {
         return "detail";
     }
 
+    /**
+     * 商品追加画面を表示する
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping("/add")
     public String showAdd(Model model) {
         List<Category> categoryList = categoryService.getCategory();
@@ -82,6 +93,14 @@ public class ItemController {
         return "add";
     }
 
+    /**
+     * 商品を追加する
+     * 
+     * @param form
+     * @param result
+     * @param model
+     * @return
+     */
     @RequestMapping("/insert")
     public String insertItem(@Validated ItemInsertForm form, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -98,5 +117,42 @@ public class ItemController {
         
         return "redirect:/item/list";
     }
+
+    /**
+     * 編集画面を表示する
+     * 
+     * @param model
+     * @return
+     */
+    @RequestMapping("/edit")
+    public String showEdit(ItemUpdateForm form, Integer itemId, Model model) {
+        Item item = itemService.showDetail(itemId);
+        List<Category> categoryList = categoryService.getCategory();
+        BeanUtils.copyProperties(item, form);
+        form.setCondition(item.getCondition().toString());
+        form.setPrice(item.getPrice().toString());
+        form.setsCategory(item.getsCategoryId().toString());
+
+        model.addAttribute("item", item);
+        model.addAttribute("categoryList", categoryList);
+        
+        return "edit";
+    }
     
+    @RequestMapping("/update")
+    public String update(@Validated ItemUpdateForm form, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+			return showEdit(form, form.getId(), model);
+		}
+
+        Item item = new Item();
+        BeanUtils.copyProperties(form, item);
+        item.setCondition(form.getIntCondition());
+        item.setsCategoryId(form.getIntSCategory());
+        item.setPrice(form.getDoublePrice());
+
+        itemService.updateItem(item);
+        
+        return "redirect:/item/list";
+    }
 }
