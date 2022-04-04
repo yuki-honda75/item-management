@@ -53,7 +53,7 @@ public class ItemRepository {
 		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
         sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
         sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
-        sql.append(" ORDER BY i.id");
+        sql.append(" ORDER BY i.id DESC");
 		sql.append(" LIMIT "); 
 		sql.append(pageable.getPageSize());
 		sql.append(" OFFSET ");
@@ -110,14 +110,15 @@ public class ItemRepository {
      * @param item
      */
     public void update(Item item) {
-        String sql = "UPDATE FROM items SET name=:name, condition=:condition, category=:category, brand=:brand, price=:price, description=:description";
+        String sql = "UPDATE items SET name=:name, condition=:condition, category=:category, brand=:brand, price=:price, description=:description WHERE id=:id";
         SqlParameterSource param = new MapSqlParameterSource()
         .addValue("name", item.getName())
         .addValue("condition", item.getCondition())
         .addValue("category", item.getsCategoryId())
         .addValue("brand", item.getBrand())
         .addValue("price", item.getPrice())
-        .addValue("description", item.getDescription());
+        .addValue("description", item.getDescription())
+        .addValue("id", item.getId());
 
         template.update(sql, param);
     }

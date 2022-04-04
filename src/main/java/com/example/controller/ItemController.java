@@ -139,4 +139,20 @@ public class ItemController {
         return "edit";
     }
     
+    @RequestMapping("/update")
+    public String update(@Validated ItemUpdateForm form, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+			return showEdit(form, form.getId(), model);
+		}
+
+        Item item = new Item();
+        BeanUtils.copyProperties(form, item);
+        item.setCondition(form.getIntCondition());
+        item.setsCategoryId(form.getIntSCategory());
+        item.setPrice(form.getDoublePrice());
+
+        itemService.updateItem(item);
+        
+        return "redirect:/item/list";
+    }
 }
