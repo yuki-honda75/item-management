@@ -85,6 +85,11 @@ public class ItemRepository {
         
     }
 
+    /**
+     * 商品を登録する
+     * 
+     * @param item
+     */
     public void insert(Item item) {
         String sql = "INSERT INTO items (name, condition, category, brand, price, shipping, description) VALUES (:name, :condition, :category, :brand, :price, 0, :description)";
         SqlParameterSource param = new MapSqlParameterSource()

@@ -37,6 +37,11 @@ public class ItemService {
 		return itemRepository.findById(itemId);
 	}
 
+	/**
+	 * 商品を追加する
+	 * 
+	 * @param item
+	 */
 	public void insertItem(Item item) {
 		itemRepository.insert(item);
 	}

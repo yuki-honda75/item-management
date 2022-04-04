@@ -73,6 +73,12 @@ public class ItemController {
         return "detail";
     }
 
+    /**
+     * 商品追加画面を表示する
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping("/add")
     public String showAdd(Model model) {
         List<Category> categoryList = categoryService.getCategory();
@@ -82,6 +88,14 @@ public class ItemController {
         return "add";
     }
 
+    /**
+     * 商品を追加する
+     * 
+     * @param form
+     * @param result
+     * @param model
+     * @return
+     */
     @RequestMapping("/insert")
     public String insertItem(@Validated ItemInsertForm form, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -97,6 +111,11 @@ public class ItemController {
         itemService.insertItem(item);
         
         return "redirect:/item/list";
+    }
+
+    @RequestMapping("/edit")
+    public String showEdit() {
+        return "edit";
     }
     
 }
