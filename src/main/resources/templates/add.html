@@ -26,7 +26,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="./list.html">Rakus Items</a>
+      <a class="navbar-brand" href="./list.html" th:href=@{/item/list}>Rakus Items</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <div>
@@ -42,7 +42,7 @@
 
   <!-- details -->
   <div id="input-main" class="container">
-    <a type="button" class="btn btn-default" href="./list.html"><i class="fa fa-reply"></i> back</a>
+    <a type="button" class="btn btn-default" href="./list.html" th:href="@{/item/list}"><i class="fa fa-reply"></i> back</a>
     <h2>Add</h2>
 
     <!-- add form -->
@@ -67,34 +67,32 @@
       <div class="form-group">
         <label for="category" class="col-sm-2 control-label">category</label>
         <div class="col-sm-8">
-          <select class="form-control">
+          <select id="lCategoryList" class="form-control">
             <option selected>-- parentCategory --</option>
-            <option th:each="category : ${categoryList}" th:if="${category.parent == null && category.nameAll == null}" th:text="${category.name}" th:value="${category.id}">parentCategory1</option>
           </select>
         </div>
       </div>
       <div class="form-group">
         <label for="category" class="col-sm-2 control-label"></label>
         <div class="col-sm-8">
-          <select class="form-control">
+          <select id="mCategoryList" class="form-control" disabled>
             <option selected>-- childCategory --</option>
-            <option th:each="category : ${categoryList}" th:if="${category.parent != null && category.nameAll == null}" th:text="${category.name}" th:value="${category.id}">childCategory1</option>
           </select>
         </div>
       </div>
       <div class="form-group">
         <label for="category" class="col-sm-2 control-label"></label>
         <div class="col-sm-8">
-          <select class="form-control" name="sCategory">
-            <option disabled selected>-- grandChild --</option>
-            <option th:each="category : ${categoryList}" th:if="${category.parent != null && category.nameAll != null}" th:text="${category.name}" th:value="${category.id}" th:field="*{sCategory}">grandChild1</option>
+          <select id="sCategoryList" class="form-control" name="sCategory" disabled>
+            <option value="">-- grandChild --</option>
+            <option id="sCategory" th:value="*{sCategory}" th:field="*{sCategory}"></option>
           </select>
         </div>
       </div>
       <div class="form-group">
         <label for="category" class="col-sm-2 control-label"></label>
         <div class="col-sm-8">
-          <span class="text-danger" th:if="${#fields.hasErrors('sCategory')}" th:errors=":*{sCategory}">error:may not be empty</span>
+          <span class="text-danger" th:if="${#fields.hasErrors('sCategory')}" th:errors="*{sCategory}" >error:may not be empty</span>
         </div>
       </div>
       <!-- brand -->
@@ -142,5 +140,42 @@
       </div>
     </form>
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script th:inline="javascript">
+    "use strivt"
+    $(function(){
+      let categoryList = /*[[${categoryList}]]*/
+      //大カテゴリをセット
+      $.each(categoryList, function(index, value){
+        if (value.parent == null && value.nameAll == null) {
+          $('#lCategoryList').append($('<option>').html(value.name).val(value.id));
+        }
+        if (value.id == $('#sCategoryList').val()) {
+          $('#sCategoryList').prop('disabled', false);
+          $('#sCategory').text(value.name);
+        }
+      })
+      //大カテゴリが変わったら中カテゴリをセット
+      $('#lCategoryList').change(function(){
+        $('#mCategoryList').prop('disabled', false);
+        $('#mCategoryList > option').remove();
+        $.each(categoryList, function(index, value){
+        if ($('#lCategoryList').val() == value.parent) {
+          $('#mCategoryList').append($('<option>').html(value.name).val(value.id));
+          }
+        })
+      });
+      //中カテゴリが変わったら小カテゴリをセット
+      $('#mCategoryList').change(function(){
+        $('#sCategoryList').prop('disabled', false);
+        $('#sCategoryList > option').remove();
+        $.each(categoryList, function(index, value){
+          if ($('#mCategoryList').val() == value.parent) {
+            $('#sCategoryList').append($('<option>').html(value.name).val(value.id));
+          }
+        })
+      });
+    });
+  </script>
 </body>
 </html>
