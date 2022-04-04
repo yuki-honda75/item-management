@@ -12,4 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class UserController {
 
+    @RequestMapping("/toRegister")
+    public String toRegister() {
+        return "register";
+    }
 }
