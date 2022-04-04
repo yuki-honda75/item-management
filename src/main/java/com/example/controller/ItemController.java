@@ -113,8 +113,20 @@ public class ItemController {
         return "redirect:/item/list";
     }
 
+    /**
+     * 編集画面を表示する
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping("/edit")
-    public String showEdit() {
+    public String showEdit(Integer itemId, Model model) {
+        Item item = itemService.showDetail(itemId);
+        List<Category> categoryList = categoryService.getCategory();
+
+        model.addAttribute("item", item);
+        model.addAttribute("categoryList", categoryList);
+        
         return "edit";
     }
     

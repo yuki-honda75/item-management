@@ -45,4 +45,13 @@ public class ItemService {
 	public void insertItem(Item item) {
 		itemRepository.insert(item);
 	}
+
+	/**
+	 * 商品を編集する
+	 * 
+	 * @param item
+	 */
+	public void updateItem(Item item) {
+		itemRepository.update(item);
+	}
 }

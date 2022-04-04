@@ -86,12 +86,30 @@ public class ItemRepository {
     }
 
     /**
-     * 商品を登録する
+     * 商品テーブルに登録する
      * 
      * @param item
      */
     public void insert(Item item) {
         String sql = "INSERT INTO items (name, condition, category, brand, price, shipping, description) VALUES (:name, :condition, :category, :brand, :price, 0, :description)";
+        SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("name", item.getName())
+        .addValue("condition", item.getCondition())
+        .addValue("category", item.getsCategoryId())
+        .addValue("brand", item.getBrand())
+        .addValue("price", item.getPrice())
+        .addValue("description", item.getDescription());
+
+        template.update(sql, param);
+    }
+
+    /**
+     * 商品情報を編集する
+     * 
+     * @param item
+     */
+    public void update(Item item) {
+        String sql = "UPDATE FROM items SET name=:name, condition=:condition, category=:category, brand=:brand, price=:price, description=:description";
         SqlParameterSource param = new MapSqlParameterSource()
         .addValue("name", item.getName())
         .addValue("condition", item.getCondition())
