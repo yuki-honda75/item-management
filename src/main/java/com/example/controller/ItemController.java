@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.domain.Category;
 import com.example.domain.Item;
 import com.example.form.ItemInsertForm;
+import com.example.form.ItemUpdateForm;
 import com.example.service.CategoryService;
 import com.example.service.ItemService;
 
@@ -37,6 +38,10 @@ public class ItemController {
     @ModelAttribute
     public ItemInsertForm setUpItemInsertForm() {
         return new ItemInsertForm();
+    }
+    @ModelAttribute
+    public ItemUpdateForm setUpItemUpdateForm() {
+        return new ItemUpdateForm();
     }
     
     /**
@@ -120,9 +125,13 @@ public class ItemController {
      * @return
      */
     @RequestMapping("/edit")
-    public String showEdit(Integer itemId, Model model) {
+    public String showEdit(ItemUpdateForm form, Integer itemId, Model model) {
         Item item = itemService.showDetail(itemId);
         List<Category> categoryList = categoryService.getCategory();
+        BeanUtils.copyProperties(item, form);
+        form.setCondition(item.getCondition().toString());
+        form.setPrice(item.getPrice().toString());
+        form.setsCategory(item.getsCategoryId().toString());
 
         model.addAttribute("item", item);
         model.addAttribute("categoryList", categoryList);

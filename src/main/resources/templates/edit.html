@@ -46,58 +46,44 @@
     <h2>Edit</h2>
 
     <!-- edit form -->
-    <form action="#" method="POST" class="form-horizontal">
+    <form action="#" method="POST" class="form-horizontal" th:object="${itemUpdateForm}">
         <!-- name -->
         <div class="form-group">
           <label for="inputName" class="col-sm-2 control-label">name</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="inputName"/>
+            <input type="text" class="form-control" id="inputName" th:field="*{name}"/>
           </div>
         </div>
         <!-- price -->
         <div class="form-group">
           <label for="price" class="col-sm-2 control-label">price</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="price"/>
+            <input type="text" class="form-control" id="price" th:field="*{price}"/>
           </div>
         </div>
         <!-- category -->
         <div class="form-group">
           <label for="category" class="col-sm-2 control-label">category</label>
           <div class="col-sm-8">
-            <select class="form-control">
+            <select id="lCategoryList" class="form-control">
               <option>- parentCategory -</option>
-              <option>parentCategory1</option>
-              <option>parentCategory2</option>
-              <option>parentCategory3</option>
-              <option>parentCategory4</option>
-              <option>parentCategory5</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label for="category" class="col-sm-2 control-label"></label>
           <div class="col-sm-8">
-            <select class="form-control">
+            <select id="mCategoryList" class="form-control">
               <option>- childCategory -</option>
-              <option>childCategory1</option>
-              <option>childCategory2</option>
-              <option>childCategory3</option>
-              <option>childCategory4</option>
-              <option>childCategory5</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label for="category" class="col-sm-2 control-label"></label>
           <div class="col-sm-8">
-            <select class="form-control">
-              <option>- grandChild -</option>
-              <option>grandChild1</option>
-              <option>grandChild2</option>
-              <option>grandChild3</option>
-              <option>grandChild4</option>
-              <option>grandChild5</option>
+            <select id="sCategoryList" class="form-control" name="sCategory" disabled>
+              <option value="">-- grandChild --</option>
+              <option id="sCategory" th:value="*{sCategory}" th:field="*{sCategory}"></option>
             </select>
           </div>
         </div>
@@ -105,7 +91,7 @@
         <div class="form-group">
           <label for="brand" class="col-sm-2 control-label">brand</label>
           <div class="col-sm-8">
-            <input type="text" id="brand" class="form-control" name="brand"/>
+            <input type="text" id="brand" class="form-control" name="brand" th:field="*{brand}"/>
           </div>
         </div>
         <!-- condition -->
@@ -113,13 +99,13 @@
           <label for="condition" class="col-sm-2 control-label">condition</label>
           <div class="col-sm-8">
             <label for="condition1" class="radio-inline">
-              <input type="radio" name="condition" id="condition1" value="1"/> 1
+              <input type="radio" name="condition" id="condition1" th:field="*{condition}" value="1"/> 1
             </label>
             <label for="condition2" class="radio-inline">
-              <input type="radio" name="condition" id="condition2" value="2"/> 2
+              <input type="radio" name="condition" id="condition2" th:field="*{condition}" value="2"/> 2
             </label>
             <label for="condition3" class="radio-inline">
-              <input type="radio" name="condition" id="condition3" value="3"/> 3
+              <input type="radio" name="condition" id="condition3" th:field="*{condition}" value="3"/> 3
             </label>
           </div>
         </div>
@@ -127,7 +113,7 @@
         <div class="form-group">
           <label for="description" class="col-sm-2 control-label">description</label>
           <div class="col-sm-8">
-            <textarea name="description" id="description" class="form-control" rows="5"></textarea>
+            <textarea name="description" id="description" class="form-control" rows="5" th:field="*{description}"></textarea>
           </div>
         </div>
         <!-- submit button -->
@@ -138,5 +124,42 @@
         </div>
       </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
+      "use strivt"
+      $(function(){
+        let categoryList = /*[[${categoryList}]]*/
+        //大カテゴリをセット
+        $.each(categoryList, function(index, value){
+          if (value.parent == null && value.nameAll == null) {
+            $('#lCategoryList').append($('<option>').html(value.name).val(value.id));
+          }
+          if (value.id == $('#sCategoryList').val()) {
+            $('#sCategoryList').prop('disabled', false);
+            $('#sCategory').text(value.name);
+          }
+        })
+        //大カテゴリが変わったら中カテゴリをセット
+        $('#lCategoryList').change(function(){
+          $('#mCategoryList').prop('disabled', false);
+          $('#mCategoryList > option').remove();
+          $.each(categoryList, function(index, value){
+          if ($('#lCategoryList').val() == value.parent) {
+            $('#mCategoryList').append($('<option>').html(value.name).val(value.id));
+            }
+          })
+        });
+        //中カテゴリが変わったら小カテゴリをセット
+        $('#mCategoryList').change(function(){
+          $('#sCategoryList').prop('disabled', false);
+          $('#sCategoryList > option').remove();
+          $.each(categoryList, function(index, value){
+            if ($('#mCategoryList').val() == value.parent) {
+              $('#sCategoryList').append($('<option>').html(value.name).val(value.id));
+            }
+          })
+        });
+      });
+    </script>
 </body>
 </html>

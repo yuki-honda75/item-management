@@ -27,6 +27,7 @@ public class ItemRepository {
         item.setId(rs.getInt("item_id"));
         item.setName(rs.getString("item_name"));
         item.setCondition(rs.getInt("condition"));
+        item.setsCategoryId(rs.getInt("category"));
         item.setSCategory(rs.getString("s_category"));
         item.setMCategory(rs.getString("m_category"));
         item.setLCategory(rs.getString("l_category"));
@@ -48,7 +49,7 @@ public class ItemRepository {
 	public Page<Item> findAll(Pageable pageable) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
-		sql.append(" i.id as item_id, i.name as item_name, condition, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
+		sql.append(" i.id as item_id, i.name as item_name, condition, category, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
 		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
         sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
         sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
@@ -72,7 +73,7 @@ public class ItemRepository {
     public Item findById(Integer itemId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
-		sql.append(" i.id as item_id, i.name as item_name, condition, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
+		sql.append(" i.id as item_id, i.name as item_name, condition, category, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
 		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
         sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
         sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
