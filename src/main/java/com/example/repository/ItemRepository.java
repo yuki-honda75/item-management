@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Item;
+import com.example.domain.ItemSearchCondition;
 
 /**
  * 
@@ -63,6 +64,51 @@ public class ItemRepository {
 		
 		return new PageImpl<>(itemList, pageable, count);
 	}
+
+    /**
+     * 検索条件によって検索する
+     * 
+     * @param condition
+     * @param pageable
+     * @return
+     */
+    public Page<Item> findByCondition(ItemSearchCondition condition, Pageable pageable) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT");
+		sql.append(" i.id as item_id, i.name as item_name, condition, category, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
+		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
+        sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
+        sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
+        StringBuilder whereSql = new StringBuilder(" WHERE 1=1");
+
+        MapSqlParameterSource param = new MapSqlParameterSource();
+        if (condition.getName() != null) {
+            whereSql.append(" AND name=:name");
+            param.addValue("name", condition.getName());
+        }
+        if (condition.getCategory() != null) {
+            whereSql.append(" AND category=:category");
+            param.addValue("category", condition.getCategory());
+        }
+        if (condition.getBrand() != null) {
+            whereSql.append(" AND brand=:brand");
+            param.addValue("brand", condition.getBrand());
+        }
+
+        StringBuilder lastSql = new StringBuilder(" ORDER BY i.id DESC");
+		lastSql.append(" LIMIT "); 
+		lastSql.append(pageable.getPageSize());
+		lastSql.append(" OFFSET ");
+		lastSql.append(pageable.getOffset());
+
+		int count = template.queryForObject("SELECT count(id) FROM items" + whereSql.toString(), param, Integer.class);
+        sql.append(whereSql);
+        sql.append(lastSql);
+		List<Item> itemList = template.query(sql.toString(), ITEM_ROW_MAPPER);
+		
+		return new PageImpl<>(itemList, pageable, count);
+        
+    }
 
 	/**
 	 * 商品をid検索する
