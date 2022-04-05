@@ -12,6 +12,9 @@ public class ItemSearchForm {
     /** ブランド */
     private String brand;
 
+    public Integer getIntCategory() {
+        return Integer.parseInt(category);
+    }
     public String getName() {
         return name;
     }
