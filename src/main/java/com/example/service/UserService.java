@@ -30,4 +30,14 @@ public class UserService {
 
         userRepository.insert(user);
     }
+
+    /**
+     * 名前（メールアドレス）が登録されているかチェック
+     * 
+     * @param name
+     * @return
+     */
+    public User checkUser(String name) {
+        return userRepository.findByName(name);
+    }
 }

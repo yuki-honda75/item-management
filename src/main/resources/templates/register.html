@@ -20,7 +20,7 @@
 <body>
   <!-- navbar -->
   <nav class="navbar navbar-inverse">
-    <a class="navbar-brand" href="./list.html" th:href=@{/item/list}>Rakus Items</a>
+    <a class="navbar-brand" href="./list.html" th:href="@{/item/list}">Rakus Items</a>
   </nav>
 
   <!-- register form -->
@@ -28,21 +28,23 @@
     <div class="panel panel-default">
       <div class="panel-heading">Register Account</div>
       <div class="panel-body">
-        <form action="#" method="POST" th:action="@{/insert}">
+        <form action="#" method="POST" th:action="@{/insert}" th:object="${userInsertForm}">
           <div class="form-group">
             <label for="mail">mail address</label>
-            <input type="email" class="form-control" id="mail">
+            <label for="" th:errors="*{name}"></label>
+            <input type="email" class="form-control" id="mail" th:field="*{name}">
           </div>
           <div class="form-group">
             <label for="password">password</label>
-            <input type="text" class="form-control" id="password">
+            <label for="" th:errors="*{password}"></label>
+            <input type="text" class="form-control" id="password" th:field="*{password}">
           </div>
           <button type="submit" class="btn btn-default">Submit</button>
         </form>
       </div>
     </div>
     <div>
-      <a type="button" class="btn btn-default" href="./login.html"><i class="fa fa-reply"></i>&nbsp;Login page</a>
+      <a type="button" class="btn btn-default" href="./login.html" th:href="@{/}"><i class="fa fa-reply"></i>&nbsp;Login page</a>
     </div>
 </body>
 </html>
