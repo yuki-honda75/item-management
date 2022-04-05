@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
+import com.example.domain.ItemSearchCondition;
 import com.example.form.ItemInsertForm;
 import com.example.form.ItemUpdateForm;
 import com.example.service.CategoryService;
@@ -53,7 +54,9 @@ public class ItemController {
      */
     @RequestMapping("/list")
     public String showList(@PageableDefault(size = 40) Pageable pageable, Model model) {
-        Page<Item> page = itemService.showList(pageable);
+        //Page<Item> page = itemService.showList(pageable);
+        ItemSearchCondition condition = new ItemSearchCondition();
+        Page<Item> page = itemService.search(condition, pageable);
 
         model.addAttribute("page", page);
         model.addAttribute("itemList", page.getContent());

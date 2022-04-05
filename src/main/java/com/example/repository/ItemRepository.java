@@ -104,7 +104,7 @@ public class ItemRepository {
 		int count = template.queryForObject("SELECT count(id) FROM items" + whereSql.toString(), param, Integer.class);
         sql.append(whereSql);
         sql.append(lastSql);
-		List<Item> itemList = template.query(sql.toString(), ITEM_ROW_MAPPER);
+		List<Item> itemList = template.query(sql.toString(), param, ITEM_ROW_MAPPER);
 		
 		return new PageImpl<>(itemList, pageable, count);
         
