@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.domain.Item;
+import com.example.domain.ItemSearchCondition;
 import com.example.repository.ItemRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,16 @@ public class ItemService {
 	 */
 	public void updateItem(Item item) {
 		itemRepository.update(item);
+	}
+
+	/**
+	 * 検索条件によって検索する
+	 * 
+	 * @param condition
+	 * @param pageable
+	 * @return
+	 */
+	public Page<Item> search(ItemSearchCondition condition, Pageable pageable) {
+		return itemRepository.findByCondition(condition, pageable);
 	}
 }

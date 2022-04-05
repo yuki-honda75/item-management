@@ -32,10 +32,10 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div id="navbar" class="collapse navbar-collapse">
       <div>
         <ul class="nav navbar-nav navbar-right">
-          <li sec:authorize="!isAuthenticated()"><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
+          <li sec:authorize="isAuthenticated()"><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
-          <span id="loginName">user: <span sec:authentication="principal.user.name">userName</span></span>
+          <span sec:authorize="isAuthenticated()" id="loginName">user: <span sec:authentication="principal.user.name">userName</span></span>
         </p>
       </div>
     </div>
@@ -49,40 +49,26 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <!-- 検索フォーム -->
     <div id="forms">
-      <form action="" class="form-inline" role="form">
+      <form action="" class="form-inline" role="form" th:action="@{/item/list}" th:object="${itemSearchForm}">
         <div class="form-group">
-          <input type="input" class="form-control" id="name" placeholder="item name"/>
+          <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="item name"/>
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
         <div class="form-group">
-          <select class="form-control">
-            <option>- parentCategory -</option>
-            <option>parentCategory1</option>
-            <option>parentCategory2</option>
-            <option>parentCategory3</option>
-            <option>parentCategory4</option>
-            <option>parentCategory5</option>
+          <select id="lCategoryList" class="form-control">
+            <option value="">- parentCategory -</option>
           </select>
-          <select class="form-control">
-            <option>- childCategory -</option>
-            <option>childCategory1</option>
-            <option>childCategory2</option>
-            <option>childCategory3</option>
-            <option>childCategory4</option>
-            <option>childCategory5</option>
+          <select id="mCategoryList" class="form-control" disabled>
+            <option value="">- childCategory -</option>
           </select>
-          <select class="form-control">
-            <option>- grandChild -</option>
-            <option>grandChild1</option>
-            <option>grandChild2</option>
-            <option>grandChild3</option>
-            <option>grandChild4</option>
-            <option>grandChild5</option>
+          <select id="sCategoryList" class="form-control" name="category" disabled>
+            <option value="">- grandChild -</option>
+            <option id="sCategory" th:value="*{category}" th:field="*{category}"></option>
           </select>
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="brand"/>
+          <input th:field="*{brand}" type="text" class="form-control" placeholder="brand"/>
         </div>
         <div class="form-group"></div>
         <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> search</button>
@@ -149,8 +135,42 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
       </div>
     </div>
   </div>
-  <script>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script th:inline="javascript">
+    "use strivt"
+    $(function(){
+      let categoryList = /*[[${categoryList}]]*/
+      //大カテゴリをセット
+      $.each(categoryList, function(index, value){
+        if (value.parent == null && value.nameAll == null) {
+          $('#lCategoryList').append($('<option>').html(value.name).val(value.id));
+        }
+        if (value.id == $('#sCategoryList').val()) {
+          $('#sCategoryList').prop('disabled', false);
+          $('#sCategory').text(value.name);
+        }
+      })
+      //大カテゴリが変わったら中カテゴリをセット
+      $('#lCategoryList').change(function(){
+        $('#mCategoryList').prop('disabled', false);
+        $('#mCategoryList > option').remove();
+        $.each(categoryList, function(index, value){
+        if ($('#lCategoryList').val() == value.parent) {
+          $('#mCategoryList').append($('<option>').html(value.name).val(value.id));
+          }
+        })
+      });
+      //中カテゴリが変わったら小カテゴリをセット
+      $('#mCategoryList').change(function(){
+        $('#sCategoryList').prop('disabled', false);
+        $('#sCategoryList > option').remove();
+        $.each(categoryList, function(index, value){
+          if ($('#mCategoryList').val() == value.parent) {
+            $('#sCategoryList').append($('<option>').html(value.name).val(value.id));
+          }
+        })
+      });
+    });
   </script>
 </body>
 </html>

@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
+import com.example.domain.ItemSearchCondition;
 import com.example.form.ItemInsertForm;
+import com.example.form.ItemSearchForm;
 import com.example.form.ItemUpdateForm;
 import com.example.service.CategoryService;
 import com.example.service.ItemService;
@@ -43,6 +45,10 @@ public class ItemController {
     public ItemUpdateForm setUpItemUpdateForm() {
         return new ItemUpdateForm();
     }
+    @ModelAttribute
+    public ItemSearchForm setUpItemSearchForm() {
+        return new ItemSearchForm();
+    }
     
     /**
      * 商品一覧を表示する
@@ -52,10 +58,19 @@ public class ItemController {
      * @return
      */
     @RequestMapping("/list")
-    public String showList(@PageableDefault(size = 40) Pageable pageable, Model model) {
-        Page<Item> page = itemService.showList(pageable);
+    public String showList(ItemSearchForm form, @PageableDefault(size = 40) Pageable pageable, Model model) {
+        //Page<Item> page = itemService.showList(pageable);
+        List<Category> categoryList = categoryService.getCategory();
+
+        ItemSearchCondition condition = new ItemSearchCondition();
+        BeanUtils.copyProperties(form, condition);
+        if (form.getCategory() != null) {
+            condition.setCategory(form.getIntCategory());
+        }
+        Page<Item> page = itemService.search(condition, pageable);
 
         model.addAttribute("page", page);
+        model.addAttribute("categoryList", categoryList);
         model.addAttribute("itemList", page.getContent());
 
         return "list";
