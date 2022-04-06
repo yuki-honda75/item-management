@@ -78,9 +78,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <!-- pagination -->
     <div class="pages">
       <nav class="page-nav">
-        <ul class="pager">
-          <li class="previous" th:classappend="${page.first} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number})}">&larr; prev</a></li>
-          <li class="next" th:classappend="${page.last} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number + 2})}">next &rarr;</a></li>
+        <ul class="pager" th:object="${itemSearchForm}">
+          <li class="previous" th:classappend="${page.first} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number},name=*{name},category=*{category},brand=*{brand})}">&larr; prev</a></li>
+          <li class="next" th:classappend="${page.last} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number + 2},name=*{name},category=*{category},brand=*{brand})}">next &rarr;</a></li>
         </ul>
       </nav>
     </div>
@@ -112,9 +112,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <!-- pagination -->
     <div class="pages">
       <nav class="page-nav">
-        <ul class="pager">
-          <li class="previous" th:classappend="${page.first} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number})}">&larr; prev</a></li>
-          <li class="next" th:classappend="${page.last} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number + 2})}">next &rarr;</a></li>
+        <ul class="pager" th:object="${itemSearchForm}">
+          <li class="previous" th:classappend="${page.first} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number},name=*{name},category=*{category},brand=*{brand})}">&larr; prev</a></li>
+          <li class="next" th:classappend="${page.last} ? 'disabled'"><a href="#" th:href="@{''(page=${page.number + 2},name=*{name},category=*{category},brand=*{brand})}">next &rarr;</a></li>
         </ul>
       </nav>
       <!-- ページ番号を指定して表示するフォーム -->

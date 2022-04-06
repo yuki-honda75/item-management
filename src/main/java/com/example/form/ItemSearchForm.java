@@ -12,7 +12,7 @@ public class ItemSearchForm {
     /** ブランド */
     private String brand;
 
-    public Integer getIntCategory() {
+    public Integer getIntCategory() throws NumberFormatException {
         return Integer.parseInt(category);
     }
     public String getName() {

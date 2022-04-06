@@ -1,6 +1,12 @@
 package com.example.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
@@ -64,8 +70,10 @@ public class ItemController {
 
         ItemSearchCondition condition = new ItemSearchCondition();
         BeanUtils.copyProperties(form, condition);
-        if (form.getCategory() != null) {
+        try {
             condition.setCategory(form.getIntCategory());
+        } catch (NumberFormatException e) {
+            condition.setCategory(null);
         }
         Page<Item> page = itemService.search(condition, pageable);
 
@@ -129,6 +137,7 @@ public class ItemController {
         item.setPrice(form.getDoublePrice());
 
         itemService.insertItem(item);
+        createLog(item);
         
         return "redirect:/item/list";
     }
@@ -157,17 +166,62 @@ public class ItemController {
     @RequestMapping("/update")
     public String update(@Validated ItemUpdateForm form, BindingResult result, Model model) {
         if (result.hasErrors()) {
-			return showEdit(form, form.getId(), model);
+            return showEdit(form, form.getId(), model);
 		}
-
+        
         Item item = new Item();
         BeanUtils.copyProperties(form, item);
         item.setCondition(form.getIntCondition());
         item.setsCategoryId(form.getIntSCategory());
         item.setPrice(form.getDoublePrice());
-
+        
         itemService.updateItem(item);
+        createLog(item);
         
         return "redirect:/item/list";
+    }
+    
+    /**
+     * ログを出力する処理
+     * 
+     * @param logName
+     * @param item
+     */
+    public void createLog(Item item) {
+        
+        Logger logger = Logger.getLogger("ADD & EDIT");
+        String LogPath = "log.txt";
+        Handler handler = null;
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("\nname:");
+        stb.append(item.getName());
+        stb.append("\ncondition:");
+        stb.append(item.getCondition());
+        stb.append("\nsCategoryId:");
+        stb.append(item.getsCategoryId());
+        stb.append("\nbrand:");
+        stb.append(item.getBrand());
+        stb.append("\nprice:");
+        stb.append(item.getPrice());
+        stb.append("\ndescription:");
+        stb.append(item.getDescription());
+        stb.append("\n");
+        try {
+        	handler = new FileHandler(LogPath, true);
+            handler.setFormatter(new SimpleFormatter());
+            logger.addHandler(handler);
+            logger.setUseParentHandlers(false);
+            logger.log(Level.INFO, stb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (handler != null) {
+                handler.flush();
+                handler.close();
+            }
+        }
+
+
     }
 }
