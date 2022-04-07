@@ -40,8 +40,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
       </div>
     </div>
   </nav>
-
+  
   <div id="main" class="container-fluid">
+    <form method="post" class="btn" th:action="@{/item/download/csv}">
+      csv download:<button type="submit">download</button>
+    </form>
     <!-- addItem link -->
     <div id="addItemButton">
       <a class="btn btn-default" href="./add.html" th:href="@{/item/add}"><i class="fa fa-plus-square-o"></i> Add New Item</a>

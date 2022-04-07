@@ -45,24 +45,20 @@ public class ItemRepository {
     /**
      * 商品を全件取得する
      * @param pageable
-     * @return ページングされた商品データ
+     * @return
      */
-	public Page<Item> findAll(Pageable pageable) {
+	public List<Item> findAll() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT");
 		sql.append(" i.id as item_id, i.name as item_name, condition, category, sc.name as s_category, mc.name as m_category, lc.name as l_category, brand, price, shipping, description");
 		sql.append(" FROM items as i LEFT OUTER JOIN category as sc ON i.category = sc.id");
         sql.append(" LEFT OUTER JOIN category as mc ON sc.parent = mc.id");
         sql.append(" LEFT OUTER JOIN category as lc ON mc.parent = lc.id");
-        sql.append(" ORDER BY i.id DESC");
-		sql.append(" LIMIT "); 
-		sql.append(pageable.getPageSize());
-		sql.append(" OFFSET ");
-		sql.append(pageable.getOffset());
-		int count = template.queryForObject("SELECT count(id) FROM items", new MapSqlParameterSource(), Integer.class);
+        sql.append(" ORDER BY i.id");
+
 		List<Item> itemList = template.query(sql.toString(), ITEM_ROW_MAPPER);
 		
-		return new PageImpl<>(itemList, pageable, count);
+		return itemList;
 	}
 
     /**
