@@ -5,7 +5,6 @@ package com.example.domain;
  * @author hondayuki
  *
  */
-
 public class Item {
 	/** id */
 	private Integer id;

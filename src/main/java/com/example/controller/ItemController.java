@@ -1,6 +1,9 @@
 package com.example.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -9,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.example.domain.Category;
+import com.example.domain.CsvItem;
 import com.example.domain.Item;
 import com.example.domain.ItemSearchCondition;
 import com.example.form.ItemInsertForm;
@@ -16,18 +20,27 @@ import com.example.form.ItemSearchForm;
 import com.example.form.ItemUpdateForm;
 import com.example.service.CategoryService;
 import com.example.service.ItemService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.csv.CsvGenerator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriUtils;
 
 
 /**
@@ -180,6 +193,28 @@ public class ItemController {
         
         return "redirect:/item/list";
     }
+
+    /**
+     * csvをダウンロードする
+     * 
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/download/csv", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> download() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        addContentDisposition(headers, "item.csv");
+        List<Item> itemList = itemService.showList();
+        List<CsvItem> csv = new ArrayList<>();
+        for (Item item : itemList) {
+            CsvItem csvItem = new CsvItem();
+            BeanUtils.copyProperties(item, csvItem);
+            csv.add(csvItem);
+        }
+        
+
+        return new ResponseEntity<>(getCsvText(csv), headers, HttpStatus.OK);
+    }
     
     /**
      * ログを出力する処理
@@ -221,7 +256,35 @@ public class ItemController {
                 handler.close();
             }
         }
+    }
 
+    /**
+     * csvを作成する
+     * 
+     * @return
+     * @throws JsonProcessingException
+     */
+    public byte[] getCsvText(List<CsvItem> csvItemList) throws JsonProcessingException {
+        CsvMapper csvMapper = new CsvMapper();
 
+        csvMapper.configure(CsvGenerator.Feature.ALWAYS_QUOTE_STRINGS, true);
+
+        CsvSchema schema = csvMapper.schemaFor(CsvItem.class).withHeader();
+
+        return csvMapper.writer(schema).writeValueAsBytes(csvItemList);
+    }
+
+    /**
+     * ファイル名を日本語対応する
+     * 
+     * @param headers
+     * @param fileName
+     * @throws UnsupportedEncodingException
+     */
+    public void addContentDisposition(HttpHeaders headers, String fileName)
+            throws UnsupportedEncodingException {
+        String headerValue = String.format("attachment; filename=\"%s\"; filename*=UTF-8''%s",
+                fileName, UriUtils.encode(fileName, StandardCharsets.UTF_8.name()));
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, headerValue);
     }
 }

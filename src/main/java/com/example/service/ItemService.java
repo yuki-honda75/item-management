@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.List;
+
 import com.example.domain.Item;
 import com.example.domain.ItemSearchCondition;
 import com.example.repository.ItemRepository;
@@ -24,8 +26,8 @@ public class ItemService {
      * @param pageable
      * @return ページングされた商品データ
      */
-	public Page<Item> showList(Pageable pageable) {
-		return itemRepository.findAll(pageable);
+	public List<Item> showList() {
+		return itemRepository.findAll();
 	}
 
 	/**
