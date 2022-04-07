@@ -42,7 +42,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   </nav>
   
   <div id="main" class="container-fluid">
-    <form method="post" class="btn" th:action="@{/item/download/csv}">
+    <form target="_blank" method="get" class="btn" th:action="@{/item/download/csv}">
       csv download:<button type="submit">download</button>
     </form>
     <!-- addItem link -->

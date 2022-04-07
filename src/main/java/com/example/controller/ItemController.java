@@ -200,7 +200,7 @@ public class ItemController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/download/csv", method = RequestMethod.POST)
+    @RequestMapping(value = "/download/csv", method = RequestMethod.GET)
     public ResponseEntity<byte[]> download() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         addContentDisposition(headers, "item.csv");
